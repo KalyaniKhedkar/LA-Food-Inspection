@@ -13,7 +13,9 @@ I will be using this data set in order to draw meaningful patterns which depicts
 This can even give us an overview of monthly trends of the violations and top violations. We can then analyze the factors responsible for this violations.
 
 **PROBLEM STATEMENT**
-What are the most common health code violations?
-What is the trend of health code violations over time?
-Is there a geographic pattern to health code violations?
+*What are the most common health code violations?
+
+*What is the trend of health code violations over time?
+
+*Is there a geographic pattern to health code violations?
 
