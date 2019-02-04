@@ -1,90 +1,9 @@
 # LA-Food-Inspection
 
------------------------------
-install.packages("tidyverse")
-library(tidyverse)
-library(lubridate)
- 
-#Joing the data on basis of serial number   
-all_data<-inspections %>% 
-          inner_join(violations,by = 'serial_number')
-str(all_data)
-
-##*** 
-#Sorting the data in a descending way to find the greatest violations
-top_codes<-sort(table(all_data$violation_code),decreasing = TRUE)[1:10]
-str(top_codes)
-df<- data.frame(top_codes)
- colnames(df)<- c('code_name','code_count')
-
-# one step process for above 3 line code
-dff<-sort(table(all_data$violation_code),decreasing = TRUE)[1:10]
-
-#Barplot of the top 10 codes  have been distributed over the frequency
-barplot(top_codes)
-
-#using ggplot library from tidyverse
-
-#Horizontal plot
-ggplot(data=df, aes(x=code_name,y=code_count)) +
-  geom_bar(stat="identity") + 
-  coord_flip() + ##converts it into Horizontal plot
-  ggtitle("Top Codes for Violations are as shown")
-
-#Vertical plot
-ggplot(data=df, aes(x=code_name, y=code_count)) + geom_bar(stat="identity")
-
-library(lubridate)
-
-#FIding the date month and year of the inspections
-all_data <- all_data %>%
-  mutate(activity_date = ymd(activity_date),
-         activity_month = ceiling_date(activity_date, "month"),
-         activity_year=round_date(activity_date,"year"))
-
-#visualisation of data over the year
-all_data %>%
-        group_by(activity_year) %>%
-         summarise(number_violations=n()) %>%
-          ggplot( aes(activity_year,number_violations))+
-           geom_line()
-
-#visualisation of violation data over 2 month interval
-all_data %>%
-  group_by(activity_month) %>%
-  summarise(number_violations=n()) %>%
-  ggplot( aes(activity_month,number_violations))+
-  geom_line()+
-  scale_x_date(date_breaks="2 months",date_labels = "%b-%y")+
-  labs(title="Violation distribution over with 2 month interval over time")
-
-#***
-
-#determining the month of the activity
-all_data<-all_data %>% 
-  mutate(month = month(activity_month, TRUE))
-str(all_data)
-all_data$month
-
-#determining monthly violations
-monthly_violations1 <- all_data %>%
-  filter(violation_code %in% df$code_name) %>%
-  group_by(violation_code,month) %>%
-  summarise(num_violations=n())
-
-options(repr.plot.width = 10, repr.plot.height = 6)
-
-#In detail graphicalpresentation of violation trends in LA county.
-#where light shade represents high amount and dark represents low number
-
-ggplot(monthly_violations1,aes(month,violation_code,fill=num_violations))+
-  geom_tile()+ 
-  labs(y = "Violation Code",
-       x = "Month of Violation",
-       title = "Monthly trends of the top ten health code violations")
-
-View(violations)
-
-
-
-
+This project deals  with the Food Inspection and violation data sets. This consists of two files:
+ Violations:
+This contains Environmental Health Violations for Restaurants and Markets in LA County. Los Angeles County Environmental Health is responsible for checking food violations for all unincorporated areas and 85 of the 88 cities in the County. Each row represents one health code violation. and the other 
+Inspection: 
+This dataset contains Environmental Health Inspection Results for Restaurants and Markets in Los Angeles County. Los Angeles County Environmental Health is responsible for inspections and enforcement activities for all unincorporated areas and 85 of the 88 cities in the County.
+I will be using this data set in order to draw meaningful patterns which depicts how the proportion of the violations have been changing over the period of time and thus understand if there could be any requirement of changes in inspection that are currently being carried out.
+This can even give us an overview of monthly trends of the violations and top violations. We can then analyze the factors responsible for this violations.
